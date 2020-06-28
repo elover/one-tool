@@ -11,15 +11,20 @@ import java.util.List;
  */
 public class BeanTools {
 
+    private BeanTools() {
+
+    }
+
     /**
-     * Note:字段数据类型、名称需一致才可以完成拷贝，如Integer、Long之间无法完成拷贝
+     * 复制bean（浅拷贝）
      *
-     * @param source           源对象
-     * @param target           目标对象
-     * @param ignoreProperties 需要忽略的属性名
-     * @return T
+     * @param source
+     * @param target
+     * @param ignoreProperties
+     * @param <T>
+     * @return
      */
-    public static <T> T copyBean(Object source, T target, String... ignoreProperties) {
+    public static <T> T copy(Object source, T target, String... ignoreProperties) {
         if (source != null) {
             BeanUtils.copyProperties(source, target, ignoreProperties);
             return target;
@@ -27,24 +32,42 @@ public class BeanTools {
         return null;
     }
 
-    public static <T> List<T> copyBeanList(List<?> objects, Class<T> class1, String... ignoreProperties) {
-        try {
-            if (objects == null || objects.isEmpty()) {
-                return new ArrayList<T>();
-            }
-            List<T> res = new ArrayList<T>();
-            for (Object s : objects) {
-                T t = class1.newInstance();
-                t = copyBean(s, t, ignoreProperties);
-                res.add(t);
-            }
-            return res;
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+    /**
+     * 复制bean list（浅拷贝）
+     *
+     * @param objects
+     * @param class1
+     * @param ignoreProperties
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> copyList(List<?> objects, Class<T> class1, String... ignoreProperties) {
+        if (objects == null || objects.isEmpty()) {
+            return new ArrayList<T>();
         }
+        List<T> res = new ArrayList<T>();
+        for (Object s : objects) {
+            T t;
+            try {
+                t = class1.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            t = copy(s, t, ignoreProperties);
+            res.add(t);
+        }
+        return res;
     }
 
-    public static <T> T copyBeanDeep(Object source, Class<T> targetClass) {
+    /**
+     * 复制bean（深拷贝）,性能不如copy，多层级结构和性能要求不高场景使用
+     *
+     * @param source
+     * @param targetClass
+     * @param <T>
+     * @return
+     */
+    public static <T> T copyDeep(Object source, Class<T> targetClass) {
         if (source == null) {
             return null;
         } else {
@@ -53,7 +76,15 @@ public class BeanTools {
         }
     }
 
-    public static <T> List<T> copyBeanListDeep(List<?> objects, Class<T> targetClass) {
+    /**
+     * 复制bean list（深拷贝）
+     *
+     * @param objects
+     * @param targetClass
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> copyListDeep(List<?> objects, Class<T> targetClass) {
         if (objects == null || objects.isEmpty()) {
             return new ArrayList<T>();
         }

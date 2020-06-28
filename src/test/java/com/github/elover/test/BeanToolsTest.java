@@ -22,8 +22,7 @@ public class BeanToolsTest {
 
         User1 user1 = new User1("nan", 20);
         User2 user2 = new User2();
-        user2 = BeanTools.copyBean(user1, user2);
-
+        user2 = BeanTools.copy(user1, user2);
         Assert.assertEquals(user2.getName(), "nan");
         Assert.assertEquals(user2.getAge(), new Integer(20));
     }
@@ -33,27 +32,27 @@ public class BeanToolsTest {
         List<User1> user1 = new ArrayList<>();
         user1.add(new User1("nan", 20));
 
-        List<User2> user2 = BeanTools.copyBeanList(user1, User2.class);
+        List<User2> user2 = BeanTools.copyList(user1, User2.class);
         Assert.assertEquals(user2.get(0).getName(), "nan");
         Assert.assertEquals(user2.get(0).getAge(), new Integer(20));
     }
 
     @Test
-    public void copyBeanDeep() {
+    public void copyDeep() {
         User1 user1 = new User1("nan", 20);
-        User2 user2 = BeanTools.copyBeanDeep(user1, User2.class);
+        User2 user2 = BeanTools.copyDeep(user1, User2.class);
 
         Assert.assertEquals(user2.getName(), "nan");
         Assert.assertEquals(user2.getAge(), new Integer(20));
     }
 
     @Test
-    public void copyBeanListDeep() {
+    public void copyListDeep() {
 
         List<User1> user1 = new ArrayList<>();
         user1.add(new User1("nan", 20));
 
-        List<User2> user2 = BeanTools.copyBeanListDeep(user1, User2.class);
+        List<User2> user2 = BeanTools.copyListDeep(user1, User2.class);
         Assert.assertEquals(user2.get(0).getName(), "nan");
         Assert.assertEquals(user2.get(0).getAge(), new Integer(20));
 
